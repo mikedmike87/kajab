@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kajab Bass — Family Tree</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#17213B">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bass Family">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     EDIT YOUR FAMILY DATA in the <script> block near the bottom
+     of this file — look for "FAMILY DATA GOES HERE".
+     Everything above is styling; you shouldn't need to touch it.
+     ============================================================ */
+
+  :root{
+    --indigo-deep:   #17213B;
+    --indigo-mid:    #223058;
+    --sand:          #E9DFC7;
+    --sand-light:    #F3ECDB;
+    --gold:          #C9992F;
+    --clay:          #A24A32;
+    --ink:           #1B2A4A;
+    --paper:         #F5F0E4;
+    --line:          rgba(233, 223, 199, 0.18);
+    --shadow:        0 18px 40px rgba(10, 15, 30, 0.35);
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Karla', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background: var(--indigo-deep);
+    color: var(--paper);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .kb-root{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 96px;
+    position: relative;
+  }
+
+  /* -------- River motif backdrop -------- */
+  .kb-river{
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 620px;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.55;
+  }
+
+  /* -------- Hero -------- */
+  .kb-hero{
+    position: relative;
+    z-index: 1;
+    padding: 88px 0 56px;
+    text-align: left;
+  }
+  .kb-eyebrow{
+    font-family: var(--sans);
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    color: var(--gold);
+    margin: 0 0 18px;
+  }
+  .kb-hero h1{
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(38px, 6vw, 64px);
+    line-height: 1.05;
+    margin: 0 0 20px;
+    max-width: 14ch;
+  }
+  .kb-hero p{
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--sand);
+    max-width: 52ch;
+    margin: 0;
+  }
+
+  /* -------- Section headings -------- */
+  .kb-section-head{
+    display:flex;
+    align-items: baseline;
+    gap: 16px;
+    margin: 0 0 40px;
+    position: relative;
+    z-index: 1;
+  }
+  .kb-section-head .kb-gen-mark{
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--indigo-deep);
+    background: var(--gold);
+    padding: 4px 12px;
+    border-radius: 3px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .kb-section-head h2{
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 22px;
+    color: var(--sand-light);
+    margin: 0;
+  }
+  .kb-section-head .kb-rule{
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  /* -------- Tree -------- */
+  .kb-tree{
+    position: relative;
+    z-index: 1;
+    padding-top: 8px;
+  }
+  .kb-gen-row{
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    justify-content: center;
+    margin-bottom: 86px;
+  }
+  .kb-connector-svg{
+    position: absolute;
+    top: -86px;
+    left: 0;
+    width: 100%;
+    height: 86px;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .kb-connector-svg path{
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 1.5;
+    stroke-opacity: 0.55;
+  }
+
+  .kb-card{
+    background: var(--indigo-mid);
+    border: 1px solid rgba(201, 153, 47, 0.28);
+    border-radius: 4px;
+    width: 190px;
+    padding: 20px 18px 18px;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+    position: relative;
+  }
+  .kb-card:hover, .kb-card:focus-visible{
+    border-color: var(--gold);
+    transform: translateY(-3px);
+    background: #283864;
+    outline: none;
+  }
+  .kb-card.is-selected{
+    border-color: var(--gold);
+    background: #2E3F70;
+  }
+  .kb-card.is-selected::after{
+    content: "";
+    position: absolute;
+    bottom: -9px;
+    left: 20px;
+    width: 12px;
+    height: 12px;
+    background: #2E3F70;
+    border-right: 1px solid var(--gold);
+    border-bottom: 1px solid var(--gold);
+    transform: rotate(45deg);
+  }
+  .kb-avatar{
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--indigo-deep);
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+  .kb-card h3{
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 17px;
+    margin: 0 0 4px;
+    color: var(--paper);
+    line-height: 1.25;
+  }
+  .kb-card .kb-years{
+    font-size: 13px;
+    color: var(--sand);
+    opacity: 0.75;
+    margin: 0;
+  }
+
+  /* -------- Story panel -------- */
+  .kb-panel{
+    position: relative;
+    z-index: 1;
+    background: var(--sand-light);
+    color: var(--ink);
+    border-radius: 6px;
+    padding: 36px 40px;
+    margin: 4px 0 80px;
+    box-shadow: var(--shadow);
+    display: none;
+  }
+  .kb-panel.is-open{ display: block; }
+  .kb-panel-top{
+    display: flex;
+    gap: 22px;
+    align-items: center;
+    margin-bottom: 22px;
+  }
+  .kb-panel-avatar{
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--indigo-deep);
+    color: var(--gold);
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .kb-panel h3{
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 26px;
+    margin: 0 0 4px;
+  }
+  .kb-panel .kb-years{
+    font-size: 14px;
+    color: var(--clay);
+    margin: 0;
+    font-weight: 600;
+  }
+  .kb-panel p.kb-story{
+    font-size: 16px;
+    line-height: 1.7;
+    margin: 0;
+    max-width: 68ch;
+  }
+  .kb-panel-close{
+    float: right;
+    background: none;
+    border: none;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink);
+    opacity: 0.55;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+  .kb-panel-close:hover{ opacity: 1; }
+
+  .kb-panel-children{
+    margin-top: 22px;
+  }
+  .kb-panel-children h4{
+    font-family: var(--sans);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--clay);
+    font-weight: 700;
+    margin: 18px 0 10px;
+  }
+  .kb-panel-children h4:first-child{
+    margin-top: 0;
+  }
+  .kb-child-list{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .kb-child-chip{
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid rgba(27, 42, 74, 0.2);
+    border-radius: 999px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .kb-child-chip:hover{
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--indigo-deep);
+  }
+
+  @media (max-width: 640px){
+    .kb-card{ width: 44%; min-width: 145px; }
+    .kb-panel{ padding: 26px 22px; }
+    .kb-panel-top{ align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="kb-root">
+
+  <svg class="kb-river" viewBox="0 0 1100 620" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M -50 120 C 250 60, 400 220, 650 160 S 1150 60, 1250 140"
+          fill="none" stroke="#C9992F" stroke-width="1" opacity="0.25"/>
+    <path d="M -50 220 C 300 170, 450 340, 700 260 S 1150 170, 1250 240"
+          fill="none" stroke="#E9DFC7" stroke-width="1" opacity="0.14"/>
+  </svg>
+
+  <header class="kb-hero">
+    <p class="kb-eyebrow">Bajana, Gambia</p>
+    <h1>Every branch carries a name worth telling.</h1>
+    <p>This tree traces the Bass family across generations — who came before us, where they lived, and the stories that brought us here. Tap anyone below to read their story.</p>
+  </header>
+
+  <div class="kb-tree" id="kbTree">
+    <!-- generations are rendered here by JavaScript -->
+  </div>
+
+  <section class="kb-panel" id="kbPanel">
+    <button class="kb-panel-close" id="kbPanelClose">Close ✕</button>
+    <div class="kb-panel-top">
+      <div class="kb-panel-avatar" id="kbPanelAvatar"></div>
+      <div>
+        <h3 id="kbPanelName"></h3>
+        <p class="kb-years" id="kbPanelYears"></p>
+      </div>
+    </div>
+    <p class="kb-story" id="kbPanelStory"></p>
+    <div class="kb-panel-children" id="kbPanelChildren"></div>
+  </section>
+
+</div>
+
+<script>
+/* ============================================================
+   FAMILY DATA GOES HERE
+   ------------------------------------------------------------
+   Add, remove, or edit people in the array below.
+
+   Each person needs:
+     id        - a short unique code, e.g. "p1" (used to link parents to children)
+     name      - full name
+     years     - e.g. "1932–2004" or "b. 1990" or "" if unknown
+     parentId  - the id of this person's parent already in the list,
+                 or null for the earliest generation (generation 1)
+     story     - a sentence or two about them. Keep it warm and specific.
+
+   People with the SAME parentId will be drawn in the same row,
+   as siblings under that parent. People with parentId: null start
+   a new root/generation on the left.
+   ============================================================ */
+
+const familyData = [
+  // ============ GENERATION 1 ============
+  { id: "g1_dakote", name: "Nadjab Dakote", years: "", parentId: null,
+    story: "Wife's name unknown." },
+
+  // ============ GENERATION 2 (child of Dakote) ============
+  { id: "g2_oukatchi", name: "Nadjab Oukatchi (also spelled Ukachi)", years: "", parentId: "g1_dakote",
+    story: "Married three times: to Nassika Paintie, to Pleinte, and to Nyote." },
+
+  // ============ GENERATION 3 (children of Oukatchi) ============
+  { id: "g3_ambroise", name: "Ambroise Babidje (Elder)", years: "1915–1991", parentId: "g2_oukatchi", viaSpouse: "Nassika Paintie",
+    story: "Married three times: to Namarria Gomis Anna, to Natabereine Maï Djinou, and to Nataberéine Marie Oukoboque." },
+  { id: "g3_dikagnoite", name: "Dikagnoite Katatonk", years: "", parentId: "g2_oukatchi", viaSpouse: "Nassika Paintie", story: "" },
+  { id: "g3_kalmette", name: "Kalmette", years: "", parentId: "g2_oukatchi", viaSpouse: "Nassika Paintie",
+    story: "Married twice: to Nachimain Maï Djoking, and to Nachimain Aladanie." },
+  { id: "g3_mariamadjibou", name: "Mariama Djibou (Youngest)", years: "", parentId: "g2_oukatchi", viaSpouse: "Nassika Paintie", story: "" },
+  { id: "g3_meta", name: "Méta (Elder)", years: "", parentId: "g2_oukatchi", viaSpouse: "Pleinte", story: "" },
+
+  // ============ GENERATION 4 ============
+  { id: "g4_keba", name: "Kéba (Elder)", years: "b. 1945 (also recorded as 1949)", parentId: "g3_ambroise", viaSpouse: "Namarria Gomis Anna",
+    story: "Married to Aramata (Kodja) Mendy Bass." },
+  { id: "g4_aramatoutotali", name: "Aramatou Totali", years: "", parentId: "g3_ambroise", viaSpouse: "Namarria Gomis Anna", story: "" },
+  { id: "g4_philip", name: "Philip", years: "1958–2009", parentId: "g3_ambroise", viaSpouse: "Namarria Gomis Anna",
+    story: "Married: to Isatou Mendy, and to Sérémin." },
+  { id: "g4_emmanuel_amb", name: "Emmanuel", years: "d. 1998", parentId: "g3_ambroise", viaSpouse: "Namarria Gomis Anna", story: "" },
+  { id: "g4_malang", name: "Malang (Youngest)", years: "", parentId: "g3_ambroise", viaSpouse: "Namarria Gomis Anna",
+    story: "Married twice: to Nassika Mariétou, and to Nabooque Abigail." },
+  { id: "g4_gnimading", name: "Gnimading Okong (Elder)", years: "", parentId: "g3_ambroise", viaSpouse: "Natabereine Maï Djinou", story: "" },
+  { id: "g4_borry", name: "Borry", years: "", parentId: "g3_ambroise", viaSpouse: "Natabereine Maï Djinou",
+    story: "Married to Nachimain Gomis Bana." },
+  { id: "g4_marietou_amb", name: "Marietou", years: "", parentId: "g3_ambroise", viaSpouse: "Natabereine Maï Djinou", story: "" },
+  { id: "g4_abdoulie", name: "Abdoulie Alex (Oupapnini)", years: "", parentId: "g3_ambroise", viaSpouse: "Natabereine Maï Djinou",
+    story: "Married twice: to Natabereine Kiné Elisabeth, and to Naboque Michelle." },
+  { id: "g4_aroky", name: "Aroky (Youngest)", years: "", parentId: "g3_ambroise", viaSpouse: "Natabereine Maï Djinou", story: "" },
+  { id: "g4_arafang", name: "Arafang (Only child)", years: "", parentId: "g3_ambroise", viaSpouse: "Nataberéine Marie Oukoboque",
+    story: "Married to Namarria Nyamo." },
+  { id: "g4_aisatounanar", name: "Aïsatou Nanar (Elder)", years: "", parentId: "g3_kalmette", viaSpouse: "Nachimain Maï Djoking", story: "" },
+  { id: "g4_mariama_k", name: "Mariama", years: "", parentId: "g3_kalmette", viaSpouse: "Nachimain Maï Djoking", story: "" },
+  { id: "g4_adamapeupelie", name: "Adama Peupelie", years: "", parentId: "g3_kalmette", viaSpouse: "Nachimain Maï Djoking", story: "" },
+  { id: "g4_edouard", name: "Edouard M'Beura (also recorded as Yaraye Bass)", years: "", parentId: "g3_kalmette", viaSpouse: "Nachimain Maï Djoking", story: "" },
+  { id: "g4_sidou", name: "Sidou", years: "", parentId: "g3_kalmette", viaSpouse: "Nachimain Maï Djoking", story: "" },
+  { id: "g4_andre", name: "André (Youngest)", years: "", parentId: "g3_kalmette", viaSpouse: "Nachimain Maï Djoking", story: "" },
+  { id: "g4_aidabotho", name: "Aïda Botho (Elder)", years: "", parentId: "g3_kalmette", viaSpouse: "Nachimain Aladanie", story: "" },
+  { id: "g4_geola", name: "Geola Elisabeth", years: "", parentId: "g3_kalmette", viaSpouse: "Nachimain Aladanie", story: "" },
+  { id: "g4_mariamaoup", name: "Mariama Oupelidjen", years: "", parentId: "g3_kalmette", viaSpouse: "Nachimain Aladanie", story: "" },
+  { id: "g4_felidje", name: "Felidjé Philip", years: "", parentId: "g3_kalmette", viaSpouse: "Nachimain Aladanie", story: "" },
+  { id: "g4_ousman", name: "Ousman", years: "", parentId: "g3_meta",
+    story: "Married to Nachhagno Maimouna." },
+
+  // ============ GENERATION 5 ============
+  { id: "g5_kaoussou", name: "Kaoussou (Elder)", years: "b. 24/10/1973", parentId: "g4_keba", story: "" },
+  { id: "g5_elie", name: "Elie Ayamo", years: "b. 15/12/1978", parentId: "g4_keba", story: "" },
+  { id: "g5_adamatwin1", name: "Adama (First Twin)", years: "b. 30/12/1982", parentId: "g4_keba", story: "" },
+  { id: "g5_awatwin2", name: "Awa (Second Twin)", years: "b. 30/12/1982", parentId: "g4_keba", story: "" },
+  { id: "g5_wimbe", name: "Wimbe", years: "b. 21/07/1989", parentId: "g4_keba", story: "" },
+  { id: "g5_denis", name: "Denis Oukatchi (Youngest)", years: "b. 08/10/1993", parentId: "g4_keba", story: "" },
+  { id: "g5_emily", name: "Emily Mam Paintie", years: "b. 17/05/1985", parentId: "g4_philip", viaSpouse: "Isatou Mendy", story: "" },
+  { id: "g5_michael", name: "Michael", years: "b. 20/10/1987", parentId: "g4_philip", viaSpouse: "Isatou Mendy", story: "" },
+  { id: "g5_solomon", name: "Solomon", years: "b. 17/07/1991", parentId: "g4_philip", viaSpouse: "Isatou Mendy", story: "" },
+  { id: "g5_mariemadeleine", name: "Marie Madeleine", years: "b. 25/05/1996", parentId: "g4_philip", viaSpouse: "Isatou Mendy", story: "" },
+  { id: "g5_ceasar", name: "Caesar", years: "b. 07/1992", parentId: "g4_philip", viaSpouse: "Sérémin", story: "" },
+  { id: "g5_carl", name: "Carl (Elder)", years: "b. 21/06/1986", parentId: "g4_borry", story: "" },
+  { id: "g5_johnny", name: "Johnny", years: "b. 24/09/1989", parentId: "g4_borry", story: "" },
+  { id: "g5_maimonica", name: "Mai Monica (Yamai)", years: "b. 16/05/1992", parentId: "g4_borry", story: "" },
+  { id: "g5_gabriel", name: "Gabriel", years: "b. 17/01/1994", parentId: "g4_borry", story: "" },
+  { id: "g5_ambruse", name: "Ambruse (Elder)", years: "b. 16/06/1991", parentId: "g4_malang", viaSpouse: "Nassika Mariétou", story: "" },
+  { id: "g5_emmanuel_m", name: "Emmanuel", years: "b. 04/01/1994", parentId: "g4_malang", viaSpouse: "Nassika Mariétou", story: "" },
+  { id: "g5_vincent", name: "Vincent (Blambé Bis)", years: "b. 11/05/1996", parentId: "g4_malang", viaSpouse: "Nassika Mariétou", story: "" },
+  { id: "g5_maimuna_m", name: "Maimuna", years: "b. 2002", parentId: "g4_malang", viaSpouse: "Nassika Mariétou", story: "" },
+  { id: "g5_sabel", name: "Sabel (Elder)", years: "b. 20/08/1987", parentId: "g4_malang", viaSpouse: "Nabooque Abigail", story: "" },
+  { id: "g5_yaffie", name: "Yaffie Thérèse", years: "b. 10/10/1990", parentId: "g4_malang", viaSpouse: "Nabooque Abigail", story: "" },
+  { id: "g5_mariama_m", name: "Mariama", years: "b. 2002", parentId: "g4_malang", viaSpouse: "Nabooque Abigail", story: "" },
+  { id: "g5_markpeter_m", name: "Mark Peter", years: "b. 2006", parentId: "g4_malang", viaSpouse: "Nabooque Abigail", story: "" },
+  { id: "g5_rose_r", name: "Rose", years: "b. 2008", parentId: "g4_malang", viaSpouse: "Nabooque Abigail", story: "" },
+  { id: "g5_josephine", name: "Josephine (Elder)", years: "b. 19/01/1989", parentId: "g4_abdoulie", viaSpouse: "Natabereine Kiné Elisabeth", story: "" },
+  { id: "g5_ukachi", name: "Ukachi", years: "b. 17/12/1992", parentId: "g4_abdoulie", viaSpouse: "Natabereine Kiné Elisabeth",
+    story: "Not to be confused with the earlier Ukachi (Oukatchi), Dakote's son." },
+  { id: "g5_ibou", name: "Ibou Abraham", years: "b. 13/04/1996", parentId: "g4_abdoulie", viaSpouse: "Natabereine Kiné Elisabeth", story: "" },
+  { id: "g5_moses", name: "Moses", years: "b. 22/07/2000", parentId: "g4_abdoulie", viaSpouse: "Natabereine Kiné Elisabeth", story: "" },
+  { id: "g5_fernando", name: "Fernando (Youngest)", years: "b.", parentId: "g4_abdoulie", viaSpouse: "Natabereine Kiné Elisabeth", story: "" },
+  { id: "g5_adama_ab", name: "Adama", years: "b. 28/02/1989", parentId: "g4_abdoulie", viaSpouse: "Naboque Michelle", story: "" },
+  { id: "g5_bana", name: "Bana (Anna)", years: "", parentId: "g4_arafang", story: "" },
+  { id: "g5_sire", name: "Siré (Elder)", years: "", parentId: "g4_ousman", story: "" },
+  { id: "g5_fathe", name: "Fathe", years: "", parentId: "g4_ousman", story: "" },
+  { id: "g5_farain", name: "Farain Isatou", years: "", parentId: "g4_ousman", story: "" },
+  { id: "g5_omar", name: "Omar", years: "", parentId: "g4_ousman", story: "" },
+
+  // ============ GENERATION 6 ============
+  { id: "g6_olivia", name: "Olivia Grace", years: "b. 2016", parentId: "g5_michael", viaSpouse: "Sarah Sarfo", story: "" },
+  { id: "g6_micah", name: "Micah Jussay", years: "b. 2017", parentId: "g5_michael", viaSpouse: "Sarah Sarfo", story: "" },
+  { id: "g6_madeline", name: "Madeline Kajab", years: "b. 2019", parentId: "g5_michael", viaSpouse: "Sarah Sarfo", story: "" },
+  { id: "g6_vivianrose", name: "Vivian-Rose Oulilang", years: "b. 2021", parentId: "g5_michael", viaSpouse: "Sarah Sarfo", story: "" },
+  { id: "g6_elizabeth", name: "Elizabeth", years: "b. 0000", parentId: "g5_bana", viaSpouse: "Malang", story: "" },
+  { id: "g6_esther", name: "Esther", years: "b. 0000", parentId: "g5_bana", viaSpouse: "Malang", story: "" },
+  { id: "g6_joshua", name: "Joshua", years: "b. 0000", parentId: "g5_bana", viaSpouse: "Malang", story: "" },
+  { id: "g6_joeslynn", name: "Joeslynn", years: "b. 2015", parentId: "g5_sabel", viaSpouse: "John Mendy", story: "" },
+  { id: "g6_quinuwarr", name: "Quinuwarr", years: "b. 2018", parentId: "g5_sabel", viaSpouse: "John Mendy", story: "" },
+  { id: "g6_louie", name: "Louie", years: "b. 0000", parentId: "g5_sabel", viaSpouse: "John Mendy", story: "" },
+  { id: "g6_joseph", name: "Joseph", years: "b. 2017", parentId: "g5_emily", viaSpouse: "Sang", story: "" },
+  { id: "g6_celine", name: "Celine Rose", years: "b. 2025", parentId: "g5_emily", viaSpouse: "Sang", story: "" },
+  { id: "g6_veronic", name: "Veronic", years: "b. 0000", parentId: "g5_johnny", viaSpouse: "Jarra Mendy", story: "" },
+  { id: "g6_carl2", name: "Carl", years: "b. 2025", parentId: "g5_johnny", viaSpouse: "Jarra Mendy", story: "" },
+  { id: "g6_cathy", name: "Catherine", years: "b. 0000", parentId: "g5_ambruse", viaSpouse: "Mariatou", story: "" }
+];
+
+/* ============================================================
+   Rendering logic below — you shouldn't need to edit this.
+   ============================================================ */
+
+function initials(name){
+  return name.split(" ").filter(Boolean).map(w => w[0]).slice(0,2).join("").toUpperCase();
+}
+
+function buildGenerations(data){
+  const byParent = {};
+  data.forEach(p => {
+    const key = p.parentId || "__root__";
+    if(!byParent[key]) byParent[key] = [];
+    byParent[key].push(p);
+  });
+
+  const generations = [];
+  let current = byParent["__root__"] || [];
+  while(current.length){
+    generations.push(current);
+    let next = [];
+    current.forEach(p => {
+      if(byParent[p.id]) next = next.concat(byParent[p.id]);
+    });
+    current = next;
+  }
+  return generations;
+}
+
+const treeEl = document.getElementById("kbTree");
+const generations = buildGenerations(familyData);
+const genLabels = ["First Generation", "Second Generation", "Third Generation", "Fourth Generation", "Fifth Generation", "Sixth Generation"];
+
+generations.forEach((gen, gi) => {
+  const head = document.createElement("div");
+  head.className = "kb-section-head";
+  head.innerHTML = `<span class="kb-gen-mark">${gi+1}</span><h2>${genLabels[gi] || "Generation " + (gi+1)}</h2><span class="kb-rule"></span>`;
+  treeEl.appendChild(head);
+
+  const row = document.createElement("div");
+  row.className = "kb-gen-row";
+  row.dataset.gen = gi;
+
+  if(gi > 0){
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "kb-connector-svg");
+    svg.dataset.gen = gi;
+    row.appendChild(svg);
+  }
+
+  gen.forEach(person => {
+    const card = document.createElement("button");
+    card.className = "kb-card";
+    card.dataset.id = person.id;
+    card.innerHTML = `<div class="kb-avatar">${initials(person.name)}</div>
+                       <h3>${person.name}</h3>
+                       <p class="kb-years">${person.years || ""}</p>`;
+    card.addEventListener("click", () => showPanel(person, card));
+    row.appendChild(card);
+  });
+
+  treeEl.appendChild(row);
+});
+
+function drawConnectors(){
+  generations.forEach((gen, gi) => {
+    if(gi === 0) return;
+    const row = treeEl.querySelectorAll(".kb-gen-row")[gi];
+    const svg = row.querySelector(".kb-connector-svg");
+    if(!svg) return;
+    svg.innerHTML = "";
+    const rowRect = row.getBoundingClientRect();
+
+    gen.forEach(person => {
+      const childCard = row.querySelector(`[data-id="${person.id}"]`);
+      const parentCard = treeEl.querySelector(`[data-id="${person.parentId}"]`);
+      if(!childCard || !parentCard) return;
+
+      const c = childCard.getBoundingClientRect();
+      const p = parentCard.getBoundingClientRect();
+
+      const x1 = p.left + p.width/2 - rowRect.left;
+      const y1 = 0;
+      const x2 = c.left + c.width/2 - rowRect.left;
+      const y2 = 86;
+      const midY = 43;
+
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", `M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`);
+      svg.appendChild(path);
+    });
+  });
+}
+
+let selectedCard = null;
+const panel = document.getElementById("kbPanel");
+
+function findPersonById(id){
+  return familyData.find(p => p.id === id);
+}
+
+function showPanel(person, card){
+  document.getElementById("kbPanelAvatar").textContent = initials(person.name);
+  document.getElementById("kbPanelName").textContent = person.name;
+  document.getElementById("kbPanelYears").textContent = person.years || "";
+  document.getElementById("kbPanelStory").textContent = person.story || "";
+
+  const childrenOfPerson = familyData.filter(p => p.parentId === person.id);
+  const childrenBox = document.getElementById("kbPanelChildren");
+
+  function chipsHtml(list){
+    return list.map(c =>
+      `<button class="kb-child-chip" data-jump-id="${c.id}">${c.name}</button>`
+    ).join("");
+  }
+
+  function wireChips(container){
+    container.querySelectorAll(".kb-child-chip").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const childId = btn.dataset.jumpId;
+        const childPerson = findPersonById(childId);
+        const childCard = treeEl.querySelector(`[data-id="${childId}"]`);
+        if(childPerson && childCard) showPanel(childPerson, childCard);
+      });
+    });
+  }
+
+  if(childrenOfPerson.length){
+    const hasSpouseGroups = childrenOfPerson.some(c => c.viaSpouse);
+    if(hasSpouseGroups){
+      const groups = {};
+      const noSpouseGroup = [];
+      childrenOfPerson.forEach(c => {
+        if(c.viaSpouse){
+          if(!groups[c.viaSpouse]) groups[c.viaSpouse] = [];
+          groups[c.viaSpouse].push(c);
+        } else {
+          noSpouseGroup.push(c);
+        }
+      });
+      let html = "";
+      Object.keys(groups).forEach(spouseName => {
+        html += `<h4>With ${spouseName}</h4><div class="kb-child-list">${chipsHtml(groups[spouseName])}</div>`;
+      });
+      if(noSpouseGroup.length){
+        html += `<h4>Other children</h4><div class="kb-child-list">${chipsHtml(noSpouseGroup)}</div>`;
+      }
+      childrenBox.innerHTML = html;
+    } else {
+      childrenBox.innerHTML = `<h4>Children</h4><div class="kb-child-list">${chipsHtml(childrenOfPerson)}</div>`;
+    }
+    wireChips(childrenBox);
+  } else {
+    childrenBox.innerHTML = "";
+  }
+
+  if(selectedCard) selectedCard.classList.remove("is-selected");
+  card.classList.add("is-selected");
+  selectedCard = card;
+
+  panel.classList.add("is-open");
+  panel.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+document.getElementById("kbPanelClose").addEventListener("click", () => {
+  panel.classList.remove("is-open");
+  if(selectedCard) selectedCard.classList.remove("is-selected");
+  selectedCard = null;
+});
+
+window.addEventListener("load", drawConnectors);
+window.addEventListener("resize", drawConnectors);
+// draw once immediately too, in case fonts/layout are already settled
+drawConnectors();
+
+// Register the service worker so this page can be installed as an app.
+if("serviceWorker" in navigator){
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {
+      // If this fails (e.g. opened as a local file), the page still works fine —
+      // it just won't be installable as an app.
+    });
+  });
+}
+</script>
+
+</body>
+</html>
